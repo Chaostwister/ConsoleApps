@@ -12,6 +12,7 @@ internal abstract class Program
     private static void Main()
     {
         Console.Clear();
+
         var run = true;
         while (run)
         {

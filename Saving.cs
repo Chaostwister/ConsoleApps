@@ -1,0 +1,61 @@
+﻿using vocabTrainer;
+
+namespace saving;
+
+public static class Saving
+{
+    public static void SaveData(VocabBookData vocabBookData, string fileName)
+    {
+        try
+        {
+            using var writer = new BinaryWriter(File.Open(fileName, FileMode.Create));
+            // Write the lengths of the arrays
+            writer.Write(vocabBookData.lang1.Count);
+            writer.Write(vocabBookData.lang2.Count);
+
+            // Write each string in the arrays
+            foreach (var item in vocabBookData.lang1)
+                writer.Write(item);
+
+            foreach (var item in vocabBookData.lang2)
+                writer.Write(item);
+            writer.Write(vocabBookData.name);
+            writer.Write(vocabBookData.fileName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error saving data: " + ex.Message);
+        }
+    }
+
+    // Load data from file
+    public static VocabBookData LoadData(string fileName)
+    {
+        var data = new VocabBookData();
+        try
+        {
+            using var reader = new BinaryReader(File.Open(fileName, FileMode.Open));
+            // Read the lengths of the arrays
+            var array1Length = reader.ReadInt32();
+            var array2Length = reader.ReadInt32();
+
+            // Read each string in the arrays
+            data.lang1 = new List<string?>();
+            for (var i = 0; i < array1Length; i++)
+                data.lang1.Add(reader.ReadString());
+
+            data.lang2 = new List<string?>();
+            for (var i = 0; i < array2Length; i++)
+                data.lang2.Add(reader.ReadString());
+
+            data.name = reader.ReadString();
+            data.fileName = reader.ReadString();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error loading data: " + ex.Message);
+        }
+
+        return data;
+    }
+}
