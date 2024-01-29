@@ -54,6 +54,15 @@ namespace vocabTrainer
 
         public override void Start()
         {
+            var path = Directory.GetCurrentDirectory();
+            while (Path.GetFileName(path) != "ConsoleApps")
+            {
+                path = Path.GetDirectoryName(path);
+            }
+            Directory.SetCurrentDirectory(path);
+            //Console.WriteLine("\nDone:" + Directory.GetCurrentDirectory());
+            
+            
             Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\Vocabs");
             Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "\\Vocabs");
 
