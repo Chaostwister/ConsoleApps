@@ -60,11 +60,13 @@ namespace vocabTrainer
                 path = Path.GetDirectoryName(path);
             }
             Directory.SetCurrentDirectory(path);
-            //Console.WriteLine("\nDone:" + Directory.GetCurrentDirectory());
             
             
-            Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\Vocabs");
-            Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "\\Vocabs");
+            
+            Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/Vocabs");
+            Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "/Vocabs");
+          Console.WriteLine("\nDone:" + Directory.GetCurrentDirectory());
+          Console.ReadLine();
 
             try
             {
@@ -83,6 +85,7 @@ namespace vocabTrainer
 
         public override bool Update()
         {
+          //return true;
             Console.Clear();
 
             Console.WriteLine("Vocab Trainer:");
@@ -153,6 +156,8 @@ namespace vocabTrainer
 
         private static void AddBook()
         {
+
+          
             Console.Clear();
             
             Console.WriteLine("Add book:\nEnter book name:");
