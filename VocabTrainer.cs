@@ -55,7 +55,6 @@ namespace vocabTrainer
             new(EditBook, "Edit Book"),
             new(LearnBook, "Learn Book"),
             new(RenameBook, "Rename book")
-            //TODO add renaming
         };
 
         public override void Start()
