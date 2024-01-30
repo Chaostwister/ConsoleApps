@@ -40,6 +40,7 @@ namespace vocabTrainer
     public class VocabTrainer : ConsoleApp
     {
         private static List<VocabBookData> _books = new();
+        private static VocabBookData data;
 
         private readonly VocabTrainerChoice[] _choices =
         {
@@ -170,7 +171,7 @@ namespace vocabTrainer
 
         private static void OpenBook()
         {
-            if (!ChooseBook(out var data)) return;
+            if (!ChooseBook(out data)) return;
 
             Console.Clear();
             Console.WriteLine($"{data.name}:\n");
@@ -186,8 +187,32 @@ namespace vocabTrainer
 
         private static void EditBook()
         {
-            if (!ChooseBook(out var data)) return;
+            if (!ChooseBook(out data)) return;
+            VocabTrainerChoice[] editChoices = {
+               new(AddWord, "Add Word"),
+               new(EditWord, "Edit Word")
+            };
 
+            while(true){  
+              Console.Clear();
+              Console.WriteLine("Edit book:\n");
+
+              for (var i = 0; i < editChoices.Length; i++){
+                  Console.WriteLine($" -{editChoices[i].Name}{new string(' ', 20 - editChoices[i].Name.Length)}[{i}]");
+              }
+            
+              var input = Console.ReadLine();
+              if(input == "") return;
+
+              if(int.TryParse(input, out var option)){
+                  editChoices[option].Function();
+              }
+
+              Saving.SaveData(data, data.fileName);
+            }
+        }
+
+        private static void AddWord(){
             while (true)
             {
                 Console.Clear();
@@ -209,13 +234,28 @@ namespace vocabTrainer
                 if (english != null) data.lang1.Add(english);
                 if (german != null) data.lang2.Add(german);
             }
+        }
 
-            Saving.SaveData(data, data.fileName);
+        private static void EditWord(){
+            Console.WriteLine($"{data.name}:\nEnter index or word to edit:\n");
+            var input = Console.ReadLine();
+            if(int.TryParse(input, out var index)){
+               Console.WriteLine($"\n{data.lang1[index - 1]}{new string(' ',20 - data.lang1[index - 1].Length)}{data.lang2[index - 1]}\n");
+               Console.WriteLine($"\nEnter new english word, press \"Enter\" to skip\n");
+
+               var newLang1Word = Console.ReadLine();
+               if(newLang1Word != "") data.lang1[index - 1] = newLang1Word;
+
+               Console.WriteLine($"\nEnter new english word, press \"Enter\" to skip\n");
+
+               var newLang2Word = Console.ReadLine();
+               if(newLang2Word != "") data.lang2[index - 1] = newLang2Word;
+            }
         }
 
         private static void LearnBook()
         {
-            if (!ChooseBook(out var data)) return;
+            if (!ChooseBook(out data)) return;
 
             var vocabAmount = data.lang1.Count;
             var random = new Random();
@@ -255,7 +295,7 @@ namespace vocabTrainer
 
         private static void DeleteBook()
         {
-            if (!ChooseBook(out var data)) return;
+            if (!ChooseBook(out data)) return;
             Console.Clear();
             Console.WriteLine("To confirm deletion type \"delete\"");
 
