@@ -9,11 +9,9 @@ public static class Saving
         try
         {
             using var writer = new BinaryWriter(File.Open(fileName, FileMode.Create));
-            // Write the lengths of the arrays
             writer.Write(vocabBookData.lang1.Count);
             writer.Write(vocabBookData.lang2.Count);
-
-            // Write each string in the arrays
+            
             foreach (var item in vocabBookData.lang1)
                 writer.Write(item);
 
@@ -28,7 +26,6 @@ public static class Saving
         }
     }
 
-    // Load data from file
     public static VocabBookData LoadData(string fileName)
     {
         var data = new VocabBookData();

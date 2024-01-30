@@ -23,7 +23,7 @@ namespace vocabTrainer
         }
     }
 
-    public delegate void ChoiceFunction();
+    public delegate void ChoiceFunction(VocabBookData bookData);
 
     public struct VocabTrainerChoice
     {
@@ -41,14 +41,21 @@ namespace vocabTrainer
     {
         private static List<VocabBookData> _books = new();
         private static VocabBookData data;
+        private static int dataIdx;
 
-        private readonly VocabTrainerChoice[] _choices =
+        private readonly VocabTrainerChoice[] _1choices =
         {
             new(AddBook, "Add Book"),
             new(OpenBook, "Open Book"),
+            new(DeleteBook, "Delete Book")
+        };
+
+        private static readonly VocabTrainerChoice[] _2choices =
+        {
             new(EditBook, "Edit Book"),
             new(LearnBook, "Learn Book"),
-            new(DeleteBook, "Delete Book")
+            new(RenameBook, "Rename book")
+            //TODO add renaming
         };
 
         public override void Start()
@@ -74,9 +81,9 @@ namespace vocabTrainer
 
             Console.WriteLine("Vocab Trainer:");
 
-            for (var i = 0; i < _choices.Length; i++)
+            for (var i = 0; i < _1choices.Length; i++)
             {
-                Console.WriteLine($" -{_choices[i].Name}{new string(' ', 20 - _choices[i].Name.Length)}[{i}]");
+                Console.WriteLine($" -{_1choices[i].Name}{new string(' ', 20 - _1choices[i].Name.Length)}[{i}]");
             }
 
             Console.WriteLine($" -quit{new string(' ', 16)}[q]\n");
@@ -91,13 +98,13 @@ namespace vocabTrainer
             }
             else
             {
-                if (option > _choices.Length - 1)
+                if (option > _1choices.Length - 1)
                 {
                     Console.WriteLine("Not a valid option");
                 }
                 else
                 {
-                    _choices[option].Function();
+                    _1choices[option].Function(data);
                 }
             }
 
@@ -122,7 +129,7 @@ namespace vocabTrainer
             }
         }
 
-        private static bool ChooseBook(out VocabBookData data)
+        private static bool ChooseBook(out VocabBookData chosenData)
         {
             Console.Clear();
             Console.WriteLine("Choose Book:");
@@ -147,30 +154,33 @@ namespace vocabTrainer
                 }
                 else
                 {
-                    data = _books[option];
+                    chosenData = _books[option];
                     return true;
                 }
             }
 
-            data = new VocabBookData();
+            chosenData = new VocabBookData();
             return false;
         }
 
-        private static void AddBook()
+        private static void AddBook(VocabBookData bookData)
         {
+            //TODO check for existing book
+
             Console.Clear();
 
             Console.WriteLine("Add book:\nEnter book name:");
             var bookName = Console.ReadLine();
             if (bookName == "") return;
 
-            var data = new VocabBookData(bookName);
-            Saving.SaveData(data, data.fileName);
-            _books.Add(data);
+            var newData = new VocabBookData(bookName);
+            Saving.SaveData(newData, newData.fileName);
+            _books.Add(newData);
         }
 
-        private static void OpenBook()
+        private static void OpenBook(VocabBookData bookData)
         {
+            //Todo show vocab list according to window size
             if (!ChooseBook(out data)) return;
 
             Console.Clear();
@@ -181,46 +191,77 @@ namespace vocabTrainer
                 Console.WriteLine($"{data.lang1[i]}{new string(' ', 20 - data.lang1[i].Length)}{data.lang2[i]}\n");
             }
 
+            //Todo fix lenght
+            Console.WriteLine($"{new string('-', Console.BufferWidth)}\n");
+
+            for (var i = 0; i < _2choices.Length; i++)
+            {
+                Console.WriteLine($" -{_2choices[i].Name}{new string(' ', 20 - _2choices[i].Name.Length)}[{i}]");
+            }
+
+            var input = Console.ReadLine();
+
+            if (!int.TryParse(input, out var option))
+            {
+                Console.WriteLine("Not a valid option");
+            }
+            else
+            {
+                if (option > _2choices.Length - 1)
+                {
+                    Console.WriteLine("Not a valid option");
+                }
+                else
+                {
+                    _2choices[option].Function(bookData);
+                }
+            }
 
             Console.ReadLine();
         }
 
-        private static void EditBook()
+        private static void EditBook(VocabBookData bookData)
         {
-            if (!ChooseBook(out data)) return;
-            VocabTrainerChoice[] editChoices = {
-               new(AddWord, "Add Word"),
-               new(EditWord, "Edit Word")
+            VocabTrainerChoice[] editChoices =
+            {
+                new(AddWord, "Add Word"),
+                new(EditWord, "Edit Word")
             };
 
-            while(true){  
-              Console.Clear();
-              Console.WriteLine("Edit book:\n");
-
-              for (var i = 0; i < editChoices.Length; i++){
-                  Console.WriteLine($" -{editChoices[i].Name}{new string(' ', 20 - editChoices[i].Name.Length)}[{i}]");
-              }
-            
-              var input = Console.ReadLine();
-              if(input == "") return;
-
-              if(int.TryParse(input, out var option)){
-                  editChoices[option].Function();
-              }
-
-              Saving.SaveData(data, data.fileName);
-            }
-        }
-
-        private static void AddWord(){
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine($"{data.name}:\n");
+                Console.WriteLine("Edit book:\n");
 
-                for (var i = 0; i < data.lang1.Count; i++)
+                for (var i = 0; i < editChoices.Length; i++)
                 {
-                    Console.WriteLine($"{data.lang1[i]}{new string(' ', 20 - data.lang1[i].Length)}{data.lang2[i]}\n");
+                    Console.WriteLine(
+                        $" -{editChoices[i].Name}{new string(' ', 20 - editChoices[i].Name.Length)}[{i}]");
+                }
+
+                var input = Console.ReadLine();
+                if (input == "") return;
+
+                if (int.TryParse(input, out var option))
+                {
+                    editChoices[option].Function(bookData);
+                }
+
+                Saving.SaveData(bookData, bookData.fileName);
+            }
+        }
+
+        private static void AddWord(VocabBookData bookData)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine($"{bookData.name}:\n");
+
+                for (var i = 0; i < bookData.lang1.Count; i++)
+                {
+                    Console.WriteLine(
+                        $"{bookData.lang1[i]}{new string(' ', 20 - bookData.lang1[i].Length)}{bookData.lang2[i]}\n");
                 }
 
 
@@ -231,39 +272,44 @@ namespace vocabTrainer
                 var german = Console.ReadLine();
                 if (german == string.Empty) break;
 
-                if (english != null) data.lang1.Add(english);
-                if (german != null) data.lang2.Add(german);
+                if (english != null) bookData.lang1.Add(english);
+                if (german != null) bookData.lang2.Add(german);
             }
         }
 
-        private static void EditWord(){
-            Console.WriteLine($"{data.name}:\nEnter index or word to edit:\n");
-            var input = Console.ReadLine();
-            if(int.TryParse(input, out var index)){
-               Console.WriteLine($"\n{data.lang1[index - 1]}{new string(' ',20 - data.lang1[index - 1].Length)}{data.lang2[index - 1]}\n");
-               Console.WriteLine($"\nEnter new english word, press \"Enter\" to skip\n");
-
-               var newLang1Word = Console.ReadLine();
-               if(newLang1Word != "") data.lang1[index - 1] = newLang1Word;
-
-               Console.WriteLine($"\nEnter new english word, press \"Enter\" to skip\n");
-
-               var newLang2Word = Console.ReadLine();
-               if(newLang2Word != "") data.lang2[index - 1] = newLang2Word;
-            }
-        }
-
-        private static void LearnBook()
+        private static void EditWord(VocabBookData bookData)
         {
-            if (!ChooseBook(out data)) return;
+            Console.Clear();
 
-            var vocabAmount = data.lang1.Count;
+            Console.WriteLine($"{bookData.name}:\nEnter index or word to edit:\n");
+            var input = Console.ReadLine();
+            if (int.TryParse(input, out var index))
+            {
+                Console.Clear();
+                Console.WriteLine(
+                    $"\n{bookData.lang1[index - 1]}{new string(' ', 20 - bookData.lang1[index - 1].Length)}{bookData.lang2[index - 1]}\n");
+            }
+
+            Console.WriteLine($"\nEnter new english word, press \"Enter\" to skip\n");
+
+            var newLang1Word = Console.ReadLine();
+            if (newLang1Word != "") bookData.lang1[index - 1] = newLang1Word;
+
+            Console.WriteLine($"\nEnter new german word, press \"Enter\" to skip\n");
+
+            var newLang2Word = Console.ReadLine();
+            if (newLang2Word != "") bookData.lang2[index - 1] = newLang2Word;
+        }
+
+        private static void LearnBook(VocabBookData bookData)
+        {
+            var vocabAmount = bookData.lang1.Count;
             var random = new Random();
 
             var pool = new List<int>();
 
 
-            for (var i = 0; i <= vocabAmount -1; i++)
+            for (var i = 0; i <= vocabAmount - 1; i++)
             {
                 pool.Add(i);
             }
@@ -274,26 +320,25 @@ namespace vocabTrainer
                 var k = random.Next(vocabAmount + 1);
                 (pool[k], pool[vocabAmount]) = (pool[vocabAmount], pool[k]);
             }
-            
+
             Console.Clear();
             Console.WriteLine("Quiz:\n");
 
             foreach (var num in pool)
             {
-                
-                Console.WriteLine(data.lang2[num] + "\n");
+                Console.WriteLine(bookData.lang2[num] + "\n");
 
                 var input = Console.ReadLine();
                 if (input == string.Empty) return;
 
-                if (input == data.lang1[num]) Console.WriteLine("\nCorrect\n");
+                if (input == bookData.lang1[num]) Console.WriteLine("\nCorrect\n");
             }
 
             Console.ReadLine();
         }
 
 
-        private static void DeleteBook()
+        private static void DeleteBook(VocabBookData bookData)
         {
             if (!ChooseBook(out data)) return;
             Console.Clear();
@@ -305,6 +350,17 @@ namespace vocabTrainer
             File.Delete(data.fileName);
 
             LoadBooks();
+        }
+
+        private static void RenameBook(VocabBookData bookData)
+        {
+            //TODO check for same/forbidden name
+            var input = Console.ReadLine();
+            File.Move(Directory.GetCurrentDirectory() + bookData.fileName,
+                Directory.GetCurrentDirectory() + input + ".dat");
+            bookData.name = input;
+            bookData.fileName = input + ".dat";
+            Saving.SaveData(bookData, bookData.fileName);
         }
     }
 }
