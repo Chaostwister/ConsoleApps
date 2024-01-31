@@ -71,7 +71,7 @@ public class MathStuff : ConsoleApp
             var input = Console.ReadLine();
             watch.Stop();
 
-            if (input == "q") return;
+            if (input is "q" or "") return;
 
             if (!int.TryParse(input, out var result)) continue;
             Console.WriteLine((num1 + num2 == result) + "\n" + (num1 + num2 == result ? watch.Elapsed : "") + "\n");
