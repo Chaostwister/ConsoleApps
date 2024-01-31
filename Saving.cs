@@ -1,6 +1,6 @@
-﻿using vocabTrainer;
+﻿using System.Net;
 
-namespace saving;
+namespace School;
 
 public static class Saving
 {
@@ -9,16 +9,18 @@ public static class Saving
         try
         {
             using var writer = new BinaryWriter(File.Open(fileName, FileMode.Create));
-            writer.Write(vocabBookData.lang1.Count);
-            writer.Write(vocabBookData.lang2.Count);
-            
-            foreach (var item in vocabBookData.lang1)
-                writer.Write(item);
+            writer.Write(vocabBookData.Lang1.Count);
+            writer.Write(vocabBookData.Lang2.Count);
 
-            foreach (var item in vocabBookData.lang2)
-                writer.Write(item);
-            writer.Write(vocabBookData.name);
-            writer.Write(vocabBookData.fileName);
+            foreach (var item in vocabBookData.Lang1) writer.Write(item);
+
+            foreach (var item in vocabBookData.Lang2) writer.Write(item);
+
+
+            writer.Write(vocabBookData.Name);
+            writer.Write(vocabBookData.FileName);
+
+            foreach (var item in vocabBookData.Repetitions) writer.Write(item);
         }
         catch (Exception ex)
         {
@@ -37,16 +39,24 @@ public static class Saving
             var array2Length = reader.ReadInt32();
 
             // Read each string in the arrays
-            data.lang1 = new List<string?>();
+            data.Lang1 = new List<string>();
             for (var i = 0; i < array1Length; i++)
-                data.lang1.Add(reader.ReadString());
+                data.Lang1.Add(reader.ReadString());
 
-            data.lang2 = new List<string?>();
+            data.Lang2 = new List<string>();
             for (var i = 0; i < array2Length; i++)
-                data.lang2.Add(reader.ReadString());
+                data.Lang2.Add(reader.ReadString());
 
-            data.name = reader.ReadString();
-            data.fileName = reader.ReadString();
+            data.Name = reader.ReadString();
+            data.FileName = reader.ReadString();
+
+
+            data.Repetitions = new List<int>();
+            if (reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                for (var i = 0; i < array2Length; i++)
+                    data.Repetitions.Add(reader.ReadInt32());
+            }
         }
         catch (Exception ex)
         {

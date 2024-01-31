@@ -1,8 +1,6 @@
-﻿using ConsoleApps;
+﻿using System.Diagnostics;
 
-namespace MathTest;
-
-using System.Diagnostics;
+namespace School;
 
 public class MathStuff : ConsoleApp
 {

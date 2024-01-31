@@ -1,4 +1,4 @@
-﻿namespace ConsoleApps;
+﻿namespace School;
 
 public static class ConsoleAppRunner
 {

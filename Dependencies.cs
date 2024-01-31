@@ -1,4 +1,4 @@
-﻿namespace dependencies;
+﻿namespace School;
 
 public static class Dependencies
 {
@@ -27,5 +27,14 @@ public static class Dependencies
         var idx = LongestElement(list);
         length = list[idx].Length;
         return idx;
+    }
+    
+    public static bool IsValidFileName(string name)
+    {
+        return !string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(name) && !name.Contains(':') && !name.Contains
+                   ('?') && !name.Contains
+                   ('\\') &&
+               !name.Contains('/') && !name.Contains('|') && !name.Contains('*') && !name.Contains('"') &&
+               !name.Contains('<') && !name.Contains('>') && name.Length < 20;
     }
 }

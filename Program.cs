@@ -1,6 +1,4 @@
-﻿using ConsoleApps;
-using MathTest;
-using vocabTrainer;
+﻿namespace School;
 
 internal abstract class Program
 {
