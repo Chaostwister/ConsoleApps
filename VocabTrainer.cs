@@ -1,4 +1,6 @@
-﻿namespace School
+using System.Threading;
+
+namespace School
 {
     [Serializable]
     public struct VocabBookData
@@ -85,7 +87,7 @@
 
         public override bool Update()
         {
-            Console.Clear();
+           Clear();
 
             Console.WriteLine("Vocab Trainer:");
 
@@ -133,7 +135,7 @@
 
         private static void LoadBooks()
         {
-            Console.Clear();
+           Clear();
             try
             {
                 var files = new DirectoryInfo(Directory.GetCurrentDirectory()).GetFiles();
@@ -155,7 +157,7 @@
 
         private static bool ChooseBook(out VocabBookData chosenData)
         {
-            Console.Clear();
+           Clear();
             Console.WriteLine("Choose Book:");
             for (var i = 0; i < _books.Count; i++)
             {
@@ -189,7 +191,7 @@
 
         private static void AddBook(VocabBookData bookData)
         {
-            Console.Clear();
+           Clear();
 
             Console.WriteLine("Add book:\nEnter book name:");
             var bookName = Console.ReadLine();
@@ -214,7 +216,7 @@
 
             while (true)
             {
-                Console.Clear();
+               Clear();
                 Console.WriteLine($"{_data.Name}:\n");
 
                 WriteOutBook(_data.Lang1, _data.Lang2, _data.Repetitions);
@@ -241,7 +243,7 @@
 
             while (true)
             {
-                Console.Clear();
+               Clear();
                 Console.WriteLine("Edit book:\n");
 
                 for (var i = 0; i < editChoices.Length; i++)
@@ -269,7 +271,7 @@
             //Todo add editing words
             while (true)
             {
-                Console.Clear();
+               Clear();
                 Console.WriteLine($"{bookData.Name}:\n");
 
                 WriteOutBook(_data.Lang1, _data.Lang2);
@@ -291,7 +293,7 @@
 
         private static void EditWord(VocabBookData bookData)
         {
-            Console.Clear();
+           Clear();
 
             WriteOutBook(bookData.Lang1, bookData.Lang2);
 
@@ -302,7 +304,7 @@
             var input = Console.ReadLine();
             if (int.TryParse(input, out var index))
             {
-                Console.Clear();
+               Clear();
                 Console.WriteLine(
                     $"\n{bookData.Lang1[index - 1]}{new string(' ', 20 - bookData.Lang1[index - 1].Length)}{bookData.Lang2[index - 1]}\n");
             }
@@ -338,7 +340,7 @@
 
             var wrongWords = new List<int>();
 
-            Console.Clear();
+           Clear();
             Console.WriteLine("Quiz:\n");
 
             foreach (var num in ShufflePool(bookData.Lang1.Count))
@@ -370,7 +372,7 @@
 
             while (true)
             {
-                Console.Clear();
+               Clear();
                 Console.WriteLine("Wrong words:\n");
 
                 var words = wrongWords;
@@ -440,7 +442,7 @@
 
         private static void RenameBook(VocabBookData bookData)
         {
-            Console.Clear();
+           Clear();
 
             Console.WriteLine($"Rename {bookData.Name} to:\n");
 
@@ -492,6 +494,16 @@
             //     if(repetitions[i]>3) Console.WriteLine($"{lang2[i]} {repetitions[i]}\n");
             // }
             //Console.ReadLine();
+        }
+
+        private static void Clear(){
+           Console.Out.Flush();
+           Console.Clear();
+           Console.Clear();
+           Console.Clear();
+           Console.Clear();
+           Console.Clear();
+           Thread.Sleep(1000);
         }
     }
 }
