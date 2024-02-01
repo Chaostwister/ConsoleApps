@@ -499,11 +499,10 @@ namespace School
         private static void Clear(){
            Console.Out.Flush();
            Console.Clear();
+           Console.Write("\x1b[2J");
+           Thread.Sleep(10);
            Console.Clear();
-           Console.Clear();
-           Console.Clear();
-           Console.Clear();
-           Thread.Sleep(1000);
+             Console.Write("\x1b[2J");
         }
     }
 }
