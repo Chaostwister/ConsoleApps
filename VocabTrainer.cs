@@ -1,7 +1,6 @@
-using System.Threading;
 
-namespace School
-{
+namespace School;
+
     [Serializable]
     public struct VocabBookData
     {
@@ -26,22 +25,22 @@ namespace School
         }
     }
 
-    public delegate void ChoiceFunction(VocabBookData bookData);
+    public delegate void VocabTrainerChoiceFunction(VocabBookData bookData);
 
     public struct VocabTrainerChoice
     {
-        public readonly ChoiceFunction Function;
+        public readonly VocabTrainerChoiceFunction Function;
         public readonly string Name;
         public readonly bool Run;
 
-        public VocabTrainerChoice(ChoiceFunction function, string name, bool run)
+        public VocabTrainerChoice(VocabTrainerChoiceFunction function, string name, bool run)
         {
             Function = function;
             Name = name;
             Run = run;
         }
 
-        public VocabTrainerChoice(ChoiceFunction function, string name)
+        public VocabTrainerChoice(VocabTrainerChoiceFunction function, string name)
         {
             Function = function;
             Name = name;
@@ -488,21 +487,9 @@ namespace School
             WriteOutBook(lang1, lang2);
             var percentage = repetitions.Sum(t => 100f / repetitions.Count / 3f * (t < 4f ? t : 3f));
             Console.WriteLine($"Learned {percentage}%\n");
-
-            // for (var i = 0; i < repetitions.Count; i++)
-            // {
-            //     if(repetitions[i]>3) Console.WriteLine($"{lang2[i]} {repetitions[i]}\n");
-            // }
-            //Console.ReadLine();
         }
 
         private static void Clear(){
-           Console.Out.Flush();
-           Console.Clear();
-           Console.Write("\x1b[2J");
-           Thread.Sleep(10);
-           Console.Clear();
-             Console.Write("\x1b[2J");
+            Console.Clear();
         }
     }
-}

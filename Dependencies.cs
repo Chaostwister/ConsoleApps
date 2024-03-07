@@ -38,3 +38,30 @@ public static class Dependencies
                !name.Contains('<') && !name.Contains('>') && name.Length < 20;
     }
 }
+
+public delegate void ChoiceFunction();
+
+public struct Choice
+{
+    public readonly ChoiceFunction Function;
+    public readonly string Name;
+    public readonly string Id;
+    public readonly bool Run;
+
+    public Choice(ChoiceFunction function, string name, string id, bool run)
+    {
+        Function = function;
+        Name = name;
+        Id = id;
+        Run = run;
+    }
+
+    public Choice(ChoiceFunction function, string name, string id)
+    {
+        Function = function;
+        Name = name;
+        Id = id;
+        Run = true;
+    }
+}
+

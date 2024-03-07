@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace School;
+﻿namespace School;
 
 public static class Saving
 {
